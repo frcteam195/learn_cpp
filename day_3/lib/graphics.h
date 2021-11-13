@@ -50,7 +50,7 @@ public:
 	       float w, float h,
 	       float angle,
 	       int r, int g, int b, int a,
-	       bool is_outline);
+	       bool is_outline );
 
 
     sf::Color clear_color;
@@ -61,6 +61,9 @@ private:
     int _mouse_x;
     int _mouse_y;
     sf::RenderWindow* window;
+    sf::Clock clock;
+    sf::Time accumulator;
+    sf::Time ups;
 
     bool _l_mouse_down;
     bool _r_mouse_down;

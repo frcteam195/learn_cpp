@@ -1,5 +1,14 @@
 #include "graphics.h"
 #include <iostream>
+#include <chrono>
+#include <cstdint>
+#include <iostream>
+#include <thread>
+
+using namespace std;
+using namespace std::chrono;
+
+auto next_frame = std::chrono::steady_clock::now();
 
 Graphics::Graphics( int width, int height )
 {
@@ -18,6 +27,8 @@ Graphics::Graphics( int width, int height )
     _r_mouse_down = false;
     _m_mouse_down = false;
 
+    accumulator = sf::Time::Zero;
+    ups = sf::seconds(1.f / 60.0f);
 }
 
 Graphics::~Graphics()
@@ -122,6 +133,8 @@ void Graphics::rect( float x, float y,
 
 void Graphics::draw()
 {
+    next_frame += std::chrono::milliseconds(1000 / 60); // 5Hz
+
     sf::Event event;
     while (window->pollEvent(event))
     {
@@ -179,6 +192,8 @@ void Graphics::draw()
     }
 
     window->display();
+
+    std::this_thread::sleep_until(next_frame);
 }
 
 void Graphics::clear()
