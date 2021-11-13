@@ -119,6 +119,7 @@ void draw()
     sf::CircleShape shape(circle_radius);
     shape.setFillColor(sf::Color(circle_r,
                                  circle_g,
+
                                  circle_b));
 
     shape.setPosition( x, y );
