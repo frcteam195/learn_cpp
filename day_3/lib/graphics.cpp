@@ -117,7 +117,7 @@ void Graphics::rect( float x, float y,
     {
 	shape.setFillColor(sf::Color(0, 0, 0, 0));
 	shape.setOutlineColor(sf::Color(r, g, b, a));
-	shape.setOutlineThickness(3);
+	shape.setOutlineThickness(10);
     }
 
 
