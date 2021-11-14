@@ -29,6 +29,9 @@ public:
 
 int main( )
 {
+
+    srand(time(NULL));
+
     Graphics graphics(800, 800);
     float angle = 0;
 
@@ -38,6 +41,8 @@ int main( )
     for(int i = 0; i < 100; i++ )
     {
         Particle my_particle = Particle();
+        my_particle.x = rand() % 800;
+        my_particle.y = rand() % 800;
         list_of_parts.push_back( my_particle );
     }
 
