@@ -4,15 +4,15 @@
 
 Graphics graphics = Graphics(800, 800);
 
-float gravity = 5.8;
+float gravity = 0;
 
 class MassSpring{
 public:
     MassSpring( vec2<float> start ){
-        mass = 2 ;
+        mass = 0.1;
         spring_x = 0;
-        spring_k = 0.1;
-        spring_rest_len = 50;
+        spring_k = 0.005;
+        spring_rest_len = 20;
 
         pos_of_spring_start = start;
         pos_of_spring_end = vec2<float>(0, 200) + start;
@@ -22,22 +22,28 @@ public:
     }
 
     void update(){
-        vec2<float> spring_vector = pos_of_spring_end - pos_of_spring_start;
-        float length_spring = spring_vector.length();
-        float force_spring = (length_spring - spring_rest_len) * spring_k;
+        vec2<float> force_on_mass = get_spring_force();
+        apply_force( get_spring_force() );
+        apply_force( vec2<float>( 0, gravity ) );
 
-        vec2<float> force_on_mass = spring_vector.normalize()* force_spring * -1;
-
-        force_on_mass = vec2<float>( 0, gravity ) + force_on_mass;
-
-        vec2<float> accel_mass = force_on_mass / mass;
-
-        vel_of_mass += accel_mass;
-        vel_of_mass *= 0.95;
+        vel_of_mass *= 0.90;
         pos_of_mass += vel_of_mass;
 
         pos_of_spring_end = pos_of_mass;
 
+    }
+
+    void apply_force( vec2<float> force){
+        vec2<float> accel_mass = force / mass;
+        vel_of_mass += accel_mass;
+    }
+
+    vec2<float> get_spring_force(){
+        vec2<float> spring_vector = pos_of_spring_end - pos_of_spring_start;
+        float length_spring = spring_vector.length();
+        float force_spring = (length_spring - spring_rest_len) * spring_k;
+
+        return spring_vector.normalize()* force_spring * -1;
     }
 
     void set_pos( vec2<float> p ){
@@ -68,42 +74,44 @@ public:
 };
 
 
+
 int main()
 {
-    MassSpring p1(vec2<float>(100, 100));
-    MassSpring p2(vec2<float>(300, 100));
-    MassSpring p3(vec2<float>(500, 100));
-    MassSpring p4(vec2<float>(200, 200));
-    MassSpring p5(vec2<float>(600, 300));
 
-    p2.spring_rest_len = 200;
+    MassSpring first( vec2<float>(200,400) );
+    MassSpring middle( vec2<float>(200, 300) );
+    MassSpring second_middle( vec2<float>(200, 300) );
+    MassSpring last( vec2<float>(400, 400) );
 
 
     while( graphics.is_running() )
     {
 
-        //update everything
-        p1.update();
-        p2.update();
-        p3.update();
-        p4.update();
-        p5.update();
+        first.pos_of_spring_start = vec2<float>(400, 0);
 
-        if( graphics.is_L_mouse_down() ){
-            p1.set_pos( vec2<float>(graphics.get_mouse_x(), graphics.get_mouse_y()) );
-            p2.set_pos( vec2<float>(graphics.get_mouse_x(), graphics.get_mouse_y()) );
-            p3.set_pos( vec2<float>(graphics.get_mouse_x(), graphics.get_mouse_y()) );
-            p4.set_pos( vec2<float>(graphics.get_mouse_x(), graphics.get_mouse_y()) );
-            p5.set_pos( vec2<float>(graphics.get_mouse_x(), graphics.get_mouse_y()) );
-        }
+        vec2<float> force_of_middle_spring = middle.get_spring_force();
+        vec2<float> force_of_last_spring = last.get_spring_force();
 
+        first.apply_force( force_of_middle_spring * -1 );
+        middle.apply_force( force_of_last_spring * -1 );
+        middle.pos_of_spring_start = first.pos_of_mass;
+
+
+
+        last.pos_of_spring_start = middle.pos_of_mass;
+        last.pos_of_mass = vec2<float>( graphics.get_mouse_x(), graphics.get_mouse_y());
+        last.pos_of_spring_end = last.pos_of_mass;
+
+
+        first.update();
+        middle.update();
 
         graphics.clear();
-        p1.draw();
-        p2.draw();
-        p3.draw();
-        p4.draw();
-        p5.draw();
+
+        first.draw();
+        last.draw();
+        middle.draw();
+
         graphics.draw();
     }
 }
