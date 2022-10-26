@@ -29,6 +29,7 @@ class Snake:
         # and draw them as rectangles based on segment[0] and segment[1] and w and h
         # ....
 
+        print("draw")  # delete this line when you get here
 
     def update( self ):
         # check if the x_speed and y_speed are 0 then return the function
@@ -52,10 +53,13 @@ class Snake:
         # otherwise add a new segment based on the last segments positions [last_seg[0]-w, last_seg[1]]
         # ...
 
+        print("add segment") # delete this line when you get here
+
     def check_loss( self ):
         # loop through all the segments, check if the positions are
         # the same as the head, if true, then you have collided and should quit()
         # ...
+        print("check_loss") # delete this line when you get here
 
 snake = Snake()
 snake.add_segment()
@@ -75,9 +79,9 @@ while True:
 
         if event.type == pygame.KEYDOWN:
 
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_DOWN:
                 snake.x_speed = 0
-                snake.y_speed = -1
+                snake.y_speed = 1
 
             # add 3 more if statement here to handle all the other arrow keys
             # ...
